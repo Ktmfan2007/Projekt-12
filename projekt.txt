@@ -1,0 +1,133 @@
+using System.Text;
+
+namespace Projekt20241014
+{
+    public partial class Form1 : Form
+    {
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        struct Termekek
+        {
+            public int Id;
+            public string Nev;
+            public int Ar;
+            public int Mennyiseg;
+
+            public Termekek(int id, string nev, int ar, int mennyiseg)
+            {
+                this.Id = id;
+                this.Nev = nev;
+                this.Ar = ar;
+                this.Mennyiseg = mennyiseg;
+            }
+        }
+
+        List<Termekek> termek = new List<Termekek>();
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            StreamReader be = new StreamReader("gyumolcsok.txt", Encoding.Default);
+            while (!be.EndOfStream)
+            {
+                List<string> sor = be.ReadLine().Split(";").ToList();
+                Termekek fel = new Termekek(int.Parse(sor[0]), sor[1], int.Parse(sor[2]), int.Parse(sor[3]));
+                termek.Add(fel);
+            }
+            be.Close();
+            foreach (var item in termek)
+            {
+                osszes.Items.Add(item.Id + " " + item.Nev + " " + item.Ar + " " + item.Mennyiseg);
+            }
+        }
+
+        private void komborendez_Click(object sender, EventArgs e)
+        {
+            rendezeseredmeny.Items.Clear();
+            if (kombo.SelectedIndex == 0)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "alma")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 1)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "körte")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 2)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "szőlő")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 3)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "eper")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 4)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "áfonya")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 5)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "görögdinnye")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+        }
+
+        private void osszbevetel_Click(object sender, EventArgs e)
+        {
+            vegeredmeny.Items.Clear();
+            int ossz = 0;
+            foreach (var item in termek)
+            {
+                ossz += item.Ar;
+            }
+            vegeredmeny.Items.Add(ossz);
+        }
+
+        private void feltotltes_Click(object sender, EventArgs e)
+        {
+            osszes.Items.Add(richTextBox1.Text);
+        }
+
+        private void torles_Click(object sender, EventArgs e)
+        {
+            
+        }
+    }
+}
