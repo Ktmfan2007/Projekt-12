@@ -1,0 +1,12 @@
+1;alma;500;600;
+2;körte;600;350;
+3;szőlő;550;60;
+4;eper;400;50;
+5;áfonya;650;55;
+6;görögdinnye;570;650;
+7;sárgadinnye;540;320;
+8;banán;530;100;
+9;sárgabarack;490;220;
+10;őszibarack;480;210;
+11;mandarin;320;65;
+12;narancs;330;80;
