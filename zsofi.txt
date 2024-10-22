@@ -1,0 +1,44 @@
+using System;
+using System.Data;
+using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+
+namespace YourNamespace
+{
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+        }
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            string connectionString = $"Server={txtServer.Text};Database={txtDatabase.Text};User ID={txtUsername.Text};Password={txtPassword.Text};";
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    MessageBox.Show("Sikeres csatlakozás!");
+
+                    // Példa lekérdezés
+                    string query = "SELECT * FROM tabla_neve";
+                    MySqlDataAdapter adapter = new MySqlDataAdapter(query, conn);
+                    DataTable table = new DataTable();
+                    adapter.Fill(table);
+                    dataGridView1.DataSource = table; // dataGridView1 a DataGridView neve
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show($"Hiba: {ex.Message}");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+    }
+}
