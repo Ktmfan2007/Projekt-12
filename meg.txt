@@ -1,0 +1,165 @@
+using System.Text;
+using System;
+using System.Data;
+using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+
+
+namespace Projekt20241014
+{
+    public partial class Form1 : Form
+    {
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        
+        struct Termekek
+        {
+            public int Id;
+            public string Nev;
+            public int Ar;
+            public int Mennyiseg;
+
+            public Termekek(int id, string nev, int ar, int mennyiseg)
+            {
+                this.Id = id;
+                this.Nev = nev;
+                this.Ar = ar;
+                this.Mennyiseg = mennyiseg;
+            }
+        }
+
+        List<Termekek> termek = new List<Termekek>();
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            string connectionString = "Server=localhost;Database=termekek;UserID = root; Password = ; ";
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    
+                    using (MySqlConnection connection = new MySqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        MessageBox.Show("Kapcsolódás sikeres!");
+
+                        
+                        string query = "SELECT * FROM termek";
+                        MySqlCommand command = new MySqlCommand(query, connection);
+                        MySqlDataReader reader = command.ExecuteReader();
+
+                        
+                        while (reader.Read())
+                        {
+                            string id = reader.GetString("Nev");
+                            osszes.Items.Add(id);
+                            string ar = reader.GetString("Ar");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Hiba a kapcsolódás során: " + ex.Message);
+                }
+                
+            }
+        }
+        
+        
+        private void komborendez_Click(object sender, EventArgs e)
+        {
+            rendezeseredmeny.Items.Clear();
+            if (kombo.SelectedIndex == 0)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "alma")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 1)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "körte")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 2)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "szőlő")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 3)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "eper")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 4)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "áfonya")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+            if (kombo.SelectedIndex == 5)
+            {
+                for (int i = 0; i < termek.Count; i++)
+                {
+                    if (termek[i].Nev == "görögdinnye")
+                    {
+                        rendezeseredmeny.Items.Add(termek[i].Id + " " + termek[i].Nev + " " + termek[i].Ar + " " + termek[i].Mennyiseg);
+                    }
+                }
+            }
+        }
+
+        private void osszbevetel_Click(object sender, EventArgs e)
+        {
+            vegeredmeny.Items.Clear();
+            int ossz = 0;
+            foreach (var item in termek)
+            {
+                ossz += item.Ar;
+            }
+            vegeredmeny.Items.Add(ossz);
+        }
+
+        private void feltotltes_Click(object sender, EventArgs e)
+        {
+            osszes.Items.Add(richTextBox1.Text);
+        }
+
+        private void torles_Click(object sender, EventArgs e)
+        {
+            
+        }
+        
+        private void adatbeolvasas_Click(object sender, EventArgs e)
+        {
+             
+        }
+    }
+}
+
