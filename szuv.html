@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szatmárcseke Időjárás</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .time, .weather, .additional-info {
+            margin-bottom: 20px;
+        }
+
+        .time {
+            font-size: 1.2em;
+        }
+
+        .weather, .additional-info {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .icon {
+            font-size: 50px;
+        }
+
+        .alert-info {
+            background-color: rgba(0, 123, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .additional-info {
+            color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            Szatmárcseke Időjárás
+        </div>
+        <div class="card-body">
+            <div class="time" id="time"></div>
+            <div class="weather" id="weather"></div>
+            <div class="additional-info" id="additional-info"></div>
+            <div id="alert" class="alert-info"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Hang lejátszása
+        function playSound(src) {
+            const audio = new Audio(src);
+            audio.play();
+        }
+
+        // Aktuális idő frissítése
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('time').textContent = `Idő: ${now.toLocaleDateString('hu-HU', options)}`;
+
+            // Új év ellenőrzése
+            if (now.getMonth() === 0 && now.getDate() === 1 && now.getHours() === 0 && now.getMinutes() === 0) {
+                // Három csipogás új évkor
+                playSound('https://www.soundjay.com/button/beep-07.wav');
+                setTimeout(() => playSound('https://www.soundjay.com/button/beep-07.wav'), 500);
+                setTimeout(() => playSound('https://www.soundjay.com/button/beep-07.wav'), 1000);
+            }
+
+            // Napi hang lejátszása
+            if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+                playSound('https://www.soundjay.com/button/beep-04.wav');
+            }
+        }
+
+        // Időjárási adatok lekérése és megjelenítése
+        async function updateWeather() {
+            try {
+                // Open-Meteo API lekérése (nem igényel API kulcsot)
+                const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.0866&longitude=22.5209&current_weather=true&hourly=precipitation,windspeed_10m');
+                const data = await response.json();
+                const weather = data.current_weather;
+                const hourlyData = data.hourly;
+
+                const temp = weather.temperature; // Hőmérséklet
+                const windspeed = weather.windspeed; // Szélsebesség
+                const precipitation = hourlyData.precipitation[0]; // Csapadék
+
+                // Időjárási információk kiírása
+                document.getElementById('weather').innerHTML = `
+                    <div class="icon">Szatmárcseke</div>
+                    <br>
+                    <p><strong>Hőmérséklet:</strong> ${temp}°C</p>
+                    <p><strong>Szélsebesség:</strong> ${windspeed} km/h</p>
+                    <p><strong>Csapadék:</strong> ${precipitation} mm</p>
+                `;
+
+                // Ha a hőmérséklet -2°C alá esik, kiírjuk a szöveget
+                if (temp < -2) {
+                    document.getElementById('additional-info').innerHTML = `A LYUKAD BEFAGYIK ÖCSI!`;
+                    playSound('https://www.soundjay.com/button/beep-05.wav');
+                } else {
+                    document.getElementById('additional-info').innerHTML = '';
+                }
+
+                // Ha a szélsebesség nagyobb mint 2 km/h, kiírjuk a figyelmeztetést
+                if (windspeed > 2) {
+                    document.getElementById('additional-info').innerHTML = `TÉRDIG ÉRŐ SZÉL VAN CIGÁNY`;
+                    playSound('https://www.soundjay.com/button/beep-05.wav');
+                }
+
+                // Ha a csapadék nem 0mm, kiírjuk a figyelmeztetést
+                if (precipitation > 0) {
+                    document.getElementById('additional-info').innerHTML = `MÁN MEGIN ESIK EZ A FOS`;
+                    playSound('https://www.soundjay.com/button/beep-05.wav');
+                }
+
+            } catch (error) {
+                document.getElementById('weather').textContent = 'Nem sikerült lekérni az időjárási adatokat.';
+                document.getElementById('additional-info').textContent = 'További információk nem érhetők el.';
+            }
+        }
+
+        // Napi időjárás értesítés
+        function dailyWeatherAlert() {
+            const now = new Date();
+            if (now.getHours() === 8 && now.getMinutes() === 0) {
+                playSound('https://www.soundjay.com/button/beep-04.wav');
+                alert('Mai időjárás: Nézd meg az aktuális időjárási adatokat!');
+            }
+        }
+
+        // Óránkénti hang lejátszása (eltérő hang)
+        function hourlyAlert() {
+            const now = new Date();
+            if (now.getMinutes() === 0 && now.getSeconds() === 0) {
+                playSound('https://www.soundjay.com/button/beep-06.wav');  // Eltérő hang
+            }
+        }
+
+        // Idő és időjárás frissítése
+        setInterval(updateTime, 1000);
+        updateTime();
+        updateWeather();
+        setInterval(dailyWeatherAlert, 60000);
+
+        // Óránkénti hang lejátszása
+        setInterval(hourlyAlert, 1000);
+    </script>
+</body>
+</html>
