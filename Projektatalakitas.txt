@@ -1,0 +1,187 @@
+using System;
+
+namespace ParkoloNyilvantarto
+{
+    public abstract class NyilvantartoRendszer
+    {
+        public int Id { get; set; }
+
+        public abstract void MegjelenitAdatokat();
+    }
+
+    public class Jarmu : NyilvantartoRendszer
+    {
+        public string Rendszam { get; set; }
+        public string Szin { get; set; }
+        public string Tipus { get; set; }
+        public string Tulajdonos { get; set; }
+
+        public override void MegjelenitAdatokat()
+        {
+            Console.WriteLine("Jármű adatok:");
+            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"Rendszám: {Rendszam}");
+            Console.WriteLine($"Szín: {Szin}");
+            Console.WriteLine($"Típus: {Tipus}");
+            Console.WriteLine($"Tulajdonos: {Tulajdonos}");
+            Console.WriteLine();
+        }
+    }
+
+    public class Parkolo : NyilvantartoRendszer
+    {
+        public int Allapot { get; set; }
+
+        public override void MegjelenitAdatokat()
+        {
+            Console.WriteLine("Parkoló adatok:");
+            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"Állapot: {Allapot}");
+            Console.WriteLine();
+        }
+    }
+
+    public class Parkolas : NyilvantartoRendszer
+    {
+        public int JarmuId { get; set; }
+        public int ParkoloId { get; set; }
+        public DateTime Kezdet { get; set; }
+        public DateTime Vege { get; set; }
+        public int IdoTartamPercben { get; set; }
+
+        public override void MegjelenitAdatokat()
+        {
+            Console.WriteLine("Parkolás adatok:");
+            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"Jármű ID: {JarmuId}");
+            Console.WriteLine($"Parkoló ID: {ParkoloId}");
+            Console.WriteLine($"Kezdete: {Kezdet}");
+            Console.WriteLine($"Vége: {Vege}");
+            Console.WriteLine($"Időtartam: {IdoTartamPercben} perc");
+            Console.WriteLine();
+        }
+    }
+
+    public class Berles : NyilvantartoRendszer
+    {
+        public int ParkoloId { get; set; }
+        public int TulajdonosId { get; set; }
+        public DateTime Kezdet { get; set; }
+        public DateTime Vege { get; set; }
+        public decimal Ar { get; set; }
+
+        public override void MegjelenitAdatokat()
+        {
+            Console.WriteLine("Bérlés adatok:");
+            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"Parkoló ID: {ParkoloId}");
+            Console.WriteLine($"Tulajdonos ID: {TulajdonosId}");
+            Console.WriteLine($"Kezdete: {Kezdet.ToShortDateString()}");
+            Console.WriteLine($"Vége: {Vege.ToShortDateString()}");
+            Console.WriteLine($"Ár: {Ar} Ft");
+            Console.WriteLine();
+        }
+    }
+
+    public class ParkoloTulaj : NyilvantartoRendszer
+    {
+        public string Nev { get; set; }
+        public string Telefonszam { get; set; }
+        public string EmailCim { get; set; }
+
+        public override void MegjelenitAdatokat()
+        {
+            Console.WriteLine("Tulajdonos adatok:");
+            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"Név: {Nev}");
+            Console.WriteLine($"Telefonszám: {Telefonszam}");
+            Console.WriteLine($"E-mail: {EmailCim}");
+            Console.WriteLine();
+        }
+    }
+
+    public class ParkoloStat : NyilvantartoRendszer
+    {
+        public long OsszesHely { get; set; }
+        public long SzabadHely { get; set; }
+        public long FoglaltHely { get; set; }
+        public long BereltHely { get; set; }
+
+        public override void MegjelenitAdatokat()
+        {
+            Console.WriteLine("Parkoló statisztika:");
+            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"Összes hely: {OsszesHely}");
+            Console.WriteLine($"Szabad hely: {SzabadHely}");
+            Console.WriteLine($"Foglalt hely: {FoglaltHely}");
+            Console.WriteLine($"Bérelt hely: {BereltHely}");
+            Console.WriteLine();
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            var jarmu = new Jarmu
+            {
+                Id = 1,
+                Rendszam = "ABC-123",
+                Szin = "Piros",
+                Tipus = "Skoda",
+                Tulajdonos = "Kiss Gábor"
+            };
+
+            var parkolo = new Parkolo
+            {
+                Id = 2,
+                Allapot = 1
+            };
+
+            var parkolas = new Parkolas
+            {
+                Id = 3,
+                JarmuId = 1,
+                ParkoloId = 2,
+                Kezdet = DateTime.Now,
+                Vege = DateTime.Now.AddHours(2),
+                IdoTartamPercben = 120
+            };
+
+            var berles = new Berles
+            {
+                Id = 4,
+                ParkoloId = 2,
+                TulajdonosId = 10,
+                Kezdet = DateTime.Today,
+                Vege = DateTime.Today.AddDays(7),
+                Ar = 5000.00m
+            };
+
+            var tulajdonos = new ParkoloTulaj
+            {
+                Id = 10,
+                Nev = "Nagy Anna",
+                Telefonszam = "+36 30 123 4567",
+                EmailCim = "nagy.anna@example.com"
+            };
+
+            var stat = new ParkoloStat
+            {
+                Id = 99,
+                OsszesHely = 100,
+                SzabadHely = 40,
+                FoglaltHely = 50,
+                BereltHely = 10
+            };
+
+            jarmu.MegjelenitAdatokat();
+            parkolo.MegjelenitAdatokat();
+            parkolas.MegjelenitAdatokat();
+            berles.MegjelenitAdatokat();
+            tulajdonos.MegjelenitAdatokat();
+            stat.MegjelenitAdatokat();
+
+        }
+    }
+}
